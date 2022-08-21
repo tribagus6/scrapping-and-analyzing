@@ -87,6 +87,7 @@ SVM = train_model()
 
 while True:
 # Scrapping
+    time.sleep(1800)
     url             = 'https://www.kompas.com/'
     html            = requests.get(url)
     soup            = BeautifulSoup(html.content, 'html.parser')

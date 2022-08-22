@@ -67,3 +67,8 @@ w3lib==1.22.0
 webencodings==0.5.1
 websockets==10.3
 zipp==3.8.0
+numpy==1.18.5
+nltk==3.5
+pandas==1.1.1
+Sastrawi==1.0.1
+scikit_learn==0.23.2

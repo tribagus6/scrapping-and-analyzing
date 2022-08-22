@@ -20,7 +20,7 @@ from firebase_admin import firestore
 import firebase_admin
 from firebase_admin import credentials
 
-cred = credentials.Certificate("./fakenewsapp-7c4fc-firebase-adminsdk-i2wov-d76adf2d90.json")
+cred = credentials.Certificate("./news-read-de276-firebase-adminsdk-voa3x-bebfcb3967.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 

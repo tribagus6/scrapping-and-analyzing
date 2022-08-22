@@ -1,4 +1,5 @@
 import requests
+import json
 from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
@@ -15,15 +16,25 @@ import csv
 from datetime import date
 import os
 import time
+from firebase_admin import firestore
+import firebase_admin
+from firebase_admin import credentials
+
+cred = credentials.Certificate("./fakenewsapp-7c4fc-firebase-adminsdk-i2wov-d76adf2d90.json")
+firebase_admin.initialize_app(cred)
+db = firestore.client()
+
+
 today =date.today()
 np.random.seed(500)
 
+nltk.download('punkt')
 factory = StemmerFactory()
 stemmer = factory.create_stemmer()
 Encoder = LabelEncoder()
 Tfidf_vect = TfidfVectorizer()
 
-# Configuration
+#   Open file data latih
 DATA_LATIH = "./datasetgabung.csv"
 
 def train_model():
@@ -77,17 +88,26 @@ def test_model(SVM):
 
     predictions_SVM = SVM.predict(Test_X_Tfidf)
 
+    #Input to DataFrame
     data = {"ID": list(datasets["ID"]), "prediksi": predictions_SVM, "narasi": list(datasets["narasi"])}
     hasil = pd.DataFrame(data, columns=["ID", "prediksi", "narasi"])
-    hasil.to_csv("./Hasil Uji Model.csv", index=False)
+    hasil_cleaning = hasil.loc[hasil["prediksi"] == 1]
 
+    #Input to Firebase
+    df_tostr = hasil_cleaning.astype("string")
+    convert_tojson = df_tostr.to_json(orient= "columns")
+    parsed = json.loads(convert_tojson)
+    db.collection(u'fakenews_db').document(u'fakenews_document').set(parsed)
+
+    #Drop Fake News then write to csv
+    # hasil_cleaning.to_csv("./hasil cleaning.csv", index = False)
 
 # Train Machine Learning model
 SVM = train_model()
 
 while True:
 # Scrapping
-    time.sleep(1800)
+
     url             = 'https://www.kompas.com/'
     html            = requests.get(url)
     soup            = BeautifulSoup(html.content, 'html.parser')
@@ -123,8 +143,9 @@ while True:
     hasil.to_csv("./Scraping.csv", index=False)
 
 
-    time.sleep(60)
+    time.sleep(1800)
     DATA_UJI = "./Scraping.csv"
     print("reading Data_uji")
+    
     # Testing the DATA_UJI with SVM
     test_model(SVM)

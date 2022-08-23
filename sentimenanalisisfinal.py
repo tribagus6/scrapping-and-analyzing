@@ -95,8 +95,8 @@ def test_model(SVM):
     predictions_SVM = SVM.predict(Test_X_Tfidf)
 
     # Input to DataFrame
-    data = {"ID": list(datasets["ID"]), "prediksi": predictions_SVM, "Judul Berita": list(datasets["Judul Berita"]),"narasi": list(datasets["narasi"])}
-    hasil = pd.DataFrame(data, columns=["ID", "prediksi", "Judul Berita", "narasi"])
+    data = {"ID": list(datasets["ID"]), "prediksi": predictions_SVM, "judul berita": list(datasets["Judul Berita"]),"narasi": list(datasets["narasi"])}
+    hasil = pd.DataFrame(data, columns=["ID", "prediksi", "judul berita", "narasi"])
     hasil_cleaning = hasil.loc[hasil["prediksi"] == 1]
 
     # Input dataframe to Firebase
@@ -104,6 +104,8 @@ def test_model(SVM):
     convert_tojson = df_tostr.to_json(orient="columns")
     parsed = json.loads(convert_tojson)
     db.collection(u'fakenews_db').document(u'fakenews_document').set(parsed)
+
+    hasil.to_csv("./hasil uji model.csv", index= False)
 
 
 # Train Machine Learning model

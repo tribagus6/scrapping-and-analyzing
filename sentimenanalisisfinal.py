@@ -20,9 +20,12 @@ import firebase_admin
 from firebase_admin import credentials
 
 # Strore configuration credential for firebase and to connect to cloud database
-cred = credentials.Certificate("./news-read-de276-firebase-adminsdk-voa3x-bebfcb3967.json")
+cred = credentials.Certificate("./babetuna-cc42d-firebase-adminsdk-iwfdd-1ab64500a5.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
+
+# Uncomment line below to download nltk requirements
+nltk.download('punkt')
 
 # Initiate variable to use into Machine Learning
 factory = StemmerFactory()
@@ -95,9 +98,9 @@ def test_model(SVM):
     predictions_SVM = SVM.predict(Test_X_Tfidf)
 
     # Input to DataFrame
-    data = {"ID": list(datasets["ID"]), "prediksi": predictions_SVM, "judul berita": list(datasets["Judul Berita"]),"narasi": list(datasets["narasi"])}
-    hasil = pd.DataFrame(data, columns=["ID", "prediksi", "judul berita", "narasi"])
-    hasil_cleaning = hasil.loc[hasil["prediksi"] == 1]
+    data = {"ID": list(datasets["ID"]), "prediksi": predictions_SVM, "judul": list(datasets["Judul Berita"]),"narasi": list(datasets["narasi"])}
+    hasil2 = pd.DataFrame(data, columns=["ID", "prediksi", "judul", "narasi"])
+    hasil_cleaning = hasil2.loc[hasil2["prediksi"] == 1]
 
     # Input dataframe to Firebase
     df_tostr = hasil_cleaning.astype("string")
@@ -105,7 +108,8 @@ def test_model(SVM):
     parsed = json.loads(convert_tojson)
     db.collection(u'fakenews_db').document(u'fakenews_document').set(parsed)
 
-    hasil.to_csv("./hasil uji model.csv", index= False)
+#     hasil2.to_csv("./hasil uji model2.csv", index=False)
+
 
 
 # Train Machine Learning model
@@ -150,6 +154,7 @@ while True:
 
         # Drop unused text and merge string
         isi_berita = berita.text.replace('Baca juga:', '')
+        isi_berita = berita.text.replace('KOMPAS.com -', '')
         isi_berita_tanpaenter = ' '.join(isi_berita.split())
 
         # Make temp table or data and will stored to dataframe

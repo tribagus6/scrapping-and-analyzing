@@ -170,7 +170,7 @@ while True:
     hasil.to_csv("./Scraping.csv", index=False)
 
     # Paused running code for 30 minuts
-    # time.sleep(1800)
+    time.sleep(1800)
 
     # Configure data for data testing model to svm
     DATA_UJI = "./Scraping.csv"

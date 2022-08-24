@@ -100,16 +100,19 @@ def test_model(SVM):
     # Input to DataFrame
     data = {"ID": list(datasets["ID"]), "prediksi": predictions_SVM, "judul": list(datasets["Judul Berita"]),"narasi": list(datasets["narasi"])}
     hasil2 = pd.DataFrame(data, columns=["ID", "prediksi", "judul", "narasi"])
-    hasil_cleaning = hasil2.loc[hasil2["prediksi"] == 1]
+    hasil3 = hasil2.loc[hasil2["prediksi"] == 1]
 
     # Input dataframe to Firebase
-    df_tostr = hasil_cleaning.astype("string")
-    convert_tojson = df_tostr.to_json(orient="columns")
-    parsed = json.loads(convert_tojson)
-    db.collection(u'fakenews_db').document(u'fakenews_document').set(parsed)
+    j = len(hasil3.index)
+    for i in range(j):
+        hasil4 = hasil3.iloc[i]
+        hasil5 = hasil4.astype('string')
+        convert_tojson = hasil5.to_json(orient="columns")
+        parsed = json.loads(convert_tojson)
+        db.collection(u'fakenews_db').document(u'fakenews_document'+str(i)).set(parsed)
 
-#     hasil2.to_csv("./hasil uji model2.csv", index=False)
 
+    # hasil2.to_csv("./hasil uji model2.csv", index=False)
 
 
 # Train Machine Learning model
@@ -167,7 +170,7 @@ while True:
     hasil.to_csv("./Scraping.csv", index=False)
 
     # Paused running code for 30 minuts
-    time.sleep(1800)
+    # time.sleep(1800)
 
     # Configure data for data testing model to svm
     DATA_UJI = "./Scraping.csv"

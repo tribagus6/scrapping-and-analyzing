@@ -20,7 +20,7 @@ import firebase_admin
 from firebase_admin import credentials
 
 # Strore configuration credential for firebase and to connect to cloud database
-cred = credentials.Certificate("./news-read-de276-firebase-adminsdk-voa3x-bebfcb3967.json")
+cred = credentials.Certificate("./babetuna-cc42d-firebase-adminsdk-iwfdd-d1cb347456.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
@@ -157,8 +157,8 @@ while True:
 
         # Drop unused text and merge string
         isi_berita = berita.text.replace('Baca juga:', '')
-        isi_berita = berita.text.replace('KOMPAS.com -', '')
-        isi_berita_tanpaenter = ' '.join(isi_berita.split())
+        isi_berita2 = isi_berita.replace('KOMPAS.com -', '')
+        isi_berita_tanpaenter = ' '.join(isi_berita2.split())
 
         # Make temp table or data and will stored to dataframe
         dataset.append([nomor, judul_berita, isi_berita_tanpaenter])
